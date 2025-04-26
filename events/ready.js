@@ -1,5 +1,8 @@
-const { Events, ActivityType, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputStyle } = require('discord.js');
+// Import Dependencies
+const { Events, ActivityType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const verify = require('../lib/verify');
+const verificationConfig = require('../data/config.json')["verification"];
+const presenceConfig = require('../data/config.json')["presence"];
 
 module.exports = {
     name: Events.ClientReady,
@@ -8,22 +11,23 @@ module.exports = {
     // The name of this function shouldn't matter
 	async execute(client) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
-		client.user.setActivity('Send help pls', {
+		client.user.setActivity(presenceConfig["statusMsg"], {
 			type: ActivityType.Watching
 		});
 
-        const channel = await client.channels.fetch('1365607323866890351');
+        const verifyChannel = await client.channels.fetch(verificationConfig["verifyChannel"]);
 
         let fetched;
         do {
-            fetched = await channel.messages.fetch({ limit: 100 });
-            await channel.bulkDelete(fetched);
+            fetched = await verifyChannel.messages.fetch({ limit: 100 });
+            await verifyChannel.bulkDelete(fetched);
         } while (fetched.size > 1);
         
-        const messages = await channel.messages.fetch();
+        const messages = await verifyChannel.messages.fetch();
 
         if (messages.size === 0) {
-            channel.send({
+            // TODO: integrate embed here
+            verifyChannel.send({
                 components: [
                     new ActionRowBuilder().addComponents(
                         new ButtonBuilder()
@@ -35,7 +39,7 @@ module.exports = {
             });
         }
 
-        client.on("interactionCreate", async (interaction) => {
+        client.on(Events.InteractionCreate, async (interaction) => {
             if (interaction.isButton()) {
                 if (interaction.customId === "open-menu") {
                     await verify.startVerification(interaction);
@@ -57,7 +61,7 @@ module.exports = {
 
             if (interaction.isModalSubmit()) {
                 if (interaction.customId === "verify-modal") {
-                    await verify.handleModalSubmit(interaction);
+                    await verify.handleModalSubmit(interaction, client);
                 }
             }
         });
