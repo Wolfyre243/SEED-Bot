@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { Client, Collection, Events, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputStyle } = require('discord.js');
-const courseMenu = require('./verifyMenu/course')
+const verify = require('./verify')
 
 // const app = require('./app'); // Express server
 
@@ -43,29 +43,32 @@ client.on("ready", async () => {
 	}
 
 	client.on("interactionCreate", async (interaction) => {
-		if (interaction.customId === "open-menu") {
-			await courseMenu.run({ interaction });
+		if (interaction.isButton()) {
+			if (interaction.customId === "open-menu") {
+				await verify.startVerification(interaction);
+			}
+			if (interaction.customId === "continue-button") {
+				await verify.showModal(interaction);
+			}
+		}
+
+		if (interaction.isStringSelectMenu()) {
+			if (interaction.customId === "course-select") {
+				await verify.handleCourseSelect(interaction);
+			}
+
+			if (interaction.customId === "role-select") {
+				await verify.handleRoleSelect(interaction);
+			}
+		}
+
+		if (interaction.isModalSubmit()) {
+			if (interaction.customId === "verify-modal") {
+				await verify.handleModalSubmit(interaction);
+			}
 		}
 	});
 });
-
-/* client.on("interactionCreate", (interaction) => {
-	if (interaction.customId === "open-modal") {
-		const modal = new ModalBuilder()
-			.setCustomId("verify-modal")
-			.setTitle("Verification");
-		
-		const name = new TextInputBuilder()
-			.setCustomId("name")
-			.setLabel("Your name")
-			.setStyle(TextInputStyle.Short)
-			.setRequired(true)
-			.setMinLength(1)
-			.setMaxLength(50);
-
-		return
-	}
-}) */
 
 // Log in to Discord with your client's token
 client.login(token);
