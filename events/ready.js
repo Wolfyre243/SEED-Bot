@@ -3,6 +3,7 @@ const { Events, ActivityType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = r
 const verify = require('../lib/verify');
 const verificationConfig = require('../data/config.json')["verification"];
 const presenceConfig = require('../data/config.json')["presence"];
+const embed = require('../data/embeds/embedMsg')
 
 module.exports = {
     name: Events.ClientReady,
@@ -28,6 +29,9 @@ module.exports = {
         if (messages.size === 0) {
             // TODO: integrate embed here
             verifyChannel.send({
+                embeds:
+                    [embed.verifyEmbed],
+
                 components: [
                     new ActionRowBuilder().addComponents(
                         new ButtonBuilder()
