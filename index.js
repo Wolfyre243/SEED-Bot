@@ -4,7 +4,8 @@ require('dotenv').config();
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { Client, Collection, Events, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputStyle } = require('discord.js');
+const courseMenu = require('./verifyMenu/course')
 
 // const app = require('./app'); // Express server
 
@@ -18,7 +19,14 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.on("ready", async () => {
 	console.log("The bot is ready");
 
-	const channel = await client.channels.fetch('1364637665571373256');
+	const channel = await client.channels.fetch('1365607323866890351');
+
+	let fetched;
+	do {
+		fetched = await channel.messages.fetch({ limit: 100 });
+		await channel.bulkDelete(fetched);
+	} while (fetched.size > 1);
+	
 	const messages = await channel.messages.fetch();
 
 	if (messages.size === 0) {
@@ -26,14 +34,38 @@ client.on("ready", async () => {
 			components: [
 				new ActionRowBuilder().addComponents(
 					new ButtonBuilder()
-					.setCustomId("open-modal")
+					.setCustomId("open-menu")
 					.setLabel("Verify")
 					.setStyle(ButtonStyle.Success),
 				),
 			],
 		});
 	}
+
+	client.on("interactionCreate", async (interaction) => {
+		if (interaction.customId === "open-menu") {
+			await courseMenu.run({ interaction });
+		}
+	});
 });
+
+/* client.on("interactionCreate", (interaction) => {
+	if (interaction.customId === "open-modal") {
+		const modal = new ModalBuilder()
+			.setCustomId("verify-modal")
+			.setTitle("Verification");
+		
+		const name = new TextInputBuilder()
+			.setCustomId("name")
+			.setLabel("Your name")
+			.setStyle(TextInputStyle.Short)
+			.setRequired(true)
+			.setMinLength(1)
+			.setMaxLength(50);
+
+		return
+	}
+}) */
 
 // Log in to Discord with your client's token
 client.login(token);
