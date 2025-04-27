@@ -3,7 +3,7 @@ const { Events, ActivityType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = r
 const verify = require('../lib/verify');
 const verificationConfig = require('../data/config.json')["verification"];
 const presenceConfig = require('../data/config.json')["presence"];
-const embed = require('../data/embeds/embedMsg')
+const { verifyEmbed } = require('../data/embeds/verifiyEmbed');
 
 module.exports = {
     name: Events.ClientReady,
@@ -13,7 +13,7 @@ module.exports = {
 	async execute(client) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 		client.user.setActivity(presenceConfig["statusMsg"], {
-			type: ActivityType.Watching
+			type: ActivityType.Competing
 		});
 
         const verifyChannel = await client.channels.fetch(verificationConfig["verifyChannel"]);
@@ -27,10 +27,9 @@ module.exports = {
         const messages = await verifyChannel.messages.fetch();
 
         if (messages.size === 0) {
-            // TODO: integrate embed here
             verifyChannel.send({
                 embeds:
-                    [embed.verifyEmbed],
+                    [verifyEmbed],
 
                 components: [
                     new ActionRowBuilder().addComponents(
