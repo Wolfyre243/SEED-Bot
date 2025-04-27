@@ -2,7 +2,9 @@
 🚧 WORK IN PROGRESS 🚧
 A discord bot made to help faciliate many tasks in the SEED discord server.
 
-# Commands
+# Features
+### Automatic Verification System
+- Verifies users and assigns verification roles to them automatically for us
 
 # Technologies
 - node.js
