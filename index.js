@@ -6,7 +6,7 @@ const path = require('node:path');
 
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 
-// const app = require('./app'); // Express server
+const app = require('./app'); // Express server
 
 const token = process.env.TOKEN;
 
@@ -108,3 +108,8 @@ for (const file of eventFiles) {
 
 // Log in to Discord with your client's token
 client.login(token);
+
+// Start the express server
+app.listen(process.env.PORT, () => {
+    console.log(`[INFO] SEDE Server systems online!`);
+})
