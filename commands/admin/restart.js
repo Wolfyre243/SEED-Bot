@@ -1,8 +1,8 @@
-const { Client, GatewayIntentBits, SlashCommandBuilder, PermissionsBitField, } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, } = require('discord.js');
 const token = process.env.TOKEN;
 
 // Create a new Discord client
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = require('../../client');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,15 +15,8 @@ module.exports = {
             content: '**🔄 [Restarting Sedé...]**'
         });
 
-        // Disconnect bot from Discord
-        await client.destroy();
-
-        // Re-initialize the bot
-        await client.login(token);
-
-        // Send confirmation to same channel
-        await interaction.channel.send({
-            content: '**✅ [Sedé restarted]**'
-        })
+        setTimeout(() => {
+            process.exit(0);
+        }, 2000);
     }
 }
