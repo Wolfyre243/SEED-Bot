@@ -17,6 +17,6 @@ module.exports = {
 
         setTimeout(() => {
             process.exit(0);
-        }, 2000);
+        }, 2000); // Disconnect the bot after 2s, Render should reconnect the bot.
     }
 }

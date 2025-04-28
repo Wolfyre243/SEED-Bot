@@ -1,5 +1,5 @@
 // Import Dependencies
-const { Events, ActivityType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { Events, ActivityType, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags, } = require('discord.js');
 const verify = require('../lib/verify');
 const verificationConfig = require('../data/config.json')["verification"];
 const presenceConfig = require('../data/config.json')["presence"];
@@ -50,6 +50,18 @@ module.exports = {
         client.on(Events.InteractionCreate, async (interaction) => {
             if (interaction.isButton()) {
                 if (interaction.customId === "open-menu") {
+
+                    const verifiedRoleId = verificationConfig['verifiedRole'];
+                    if (interaction.member.roles.cache.has(verifiedRoleId)) {
+                        if (!interaction.replied && !interaction.deferred) {
+                            await interaction.reply({
+                                content: "✅ Already verified",
+                                flags: MessageFlags.Ephemeral,
+                            });
+                        }
+                        return;
+                    }
+                    
                     await verify.startVerification(interaction);
                 }
                 if (interaction.customId === "continue-button") {
