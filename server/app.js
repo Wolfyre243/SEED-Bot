@@ -1,15 +1,15 @@
 // Import dependencies
 const express = require('express');
-// // Import routers
-// const mainRouter = require('./routes/mainRoutes');
+// Import routers
+const mainRouter = require('./routes/mainRoutes');
 
 const app = express();
 
-// // Middleware
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-// app.use('/api', mainRouter);
+app.use('/api', mainRouter);
 
 // Webpage
 // app.use('/', express.static('public'));
