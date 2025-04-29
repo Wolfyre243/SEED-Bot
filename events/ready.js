@@ -4,6 +4,8 @@ const verify = require('../lib/verify');
 const verificationConfig = require('../data/config.json')["verification"];
 const presenceConfig = require('../data/config.json')["presence"];
 const { verifyEmbed } = require('../data/embeds/verifiyEmbed');
+const welcomeEmbed = require('../data/embeds/welcomeEmbed');
+const GUILD_ID = process.env.GUILD_ID;
 
 module.exports = {
     name: Events.ClientReady,
@@ -72,6 +74,18 @@ module.exports = {
                     await verify.handleModalSubmit(interaction, client);
                 }
             }
+        });
+
+        client.on('guildMemberAdd', async member => {
+            if (member.guild.id !== GUILD_ID) {
+                return;
+            }
+        
+            console.log('New member joined');
+            member.send({
+                content: "Welcome to SEED SIG's OFFICIAL DISCORD! 🌱",
+                embeds: [welcomeEmbed.welcomeEmbed1, welcomeEmbed.welcomeEmbed2]
+            })
         });
 	},
 }
