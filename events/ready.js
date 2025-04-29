@@ -12,6 +12,11 @@ module.exports = {
     // The name of this function shouldn't matter
 	async execute(client) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
+
+        const logChannelId = require("../data/config.json").logChannelId;
+        const logChannel = await client.channels.fetch(logChannelId);
+        logChannel.send(`Ready! <@${client.user.id}> is now **ONLINE**`);
+        
 		client.user.setActivity(presenceConfig["statusMsg"], {
 			type: ActivityType.Competing
 		});

@@ -10,8 +10,8 @@ const app = require('./server/app'); // Express server
 
 const token = process.env.TOKEN;
 
-// Create a new Discord client
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+// Import client from client.js
+const client = require('./client');
 
 //---------------------------------Main Script----------------------------------------
 
