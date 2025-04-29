@@ -52,6 +52,18 @@ module.exports = {
         client.on(Events.InteractionCreate, async (interaction) => {
             if (interaction.isButton()) {
                 if (interaction.customId === "open-menu") {
+
+                    const verifiedRoleId = verificationConfig['verifiedRole'];
+                    if (interaction.member.roles.cache.has(verifiedRoleId)) {
+                        if (!interaction.replied && !interaction.deferred) {
+                            await interaction.reply({
+                                content: "✅ Already verified",
+                                flags: MessageFlags.Ephemeral,
+                            });
+                        }
+                        return;
+                    }
+                    
                     await verify.startVerification(interaction);
                 }
                 if (interaction.customId === "continue-button") {
@@ -80,6 +92,7 @@ module.exports = {
             if (member.guild.id !== GUILD_ID) {
                 return;
             }
+
         
             console.log('New member joined');
             member.send({
