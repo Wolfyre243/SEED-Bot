@@ -1,5 +1,5 @@
 // Import Dependencies
-const { Events, ActivityType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { Events, ActivityType, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 const verify = require('../lib/verify');
 const verificationConfig = require('../data/config.json')["verification"];
 const presenceConfig = require('../data/config.json')["presence"];
