@@ -13,6 +13,7 @@ module.exports = {
 	async execute(client) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 
+        // TODO: shld be fetching from DB
         const logChannelId = require("../data/config.json").logChannelId;
         const logChannel = await client.channels.fetch(logChannelId);
         logChannel.send(`Ready! <@${client.user.id}> is now **ONLINE**`);
@@ -21,69 +22,6 @@ module.exports = {
 			type: ActivityType.Competing
 		});
 
-        const verifyChannel = await client.channels.fetch(verificationConfig["verifyChannel"]);
-
-        let fetched;
-        do {
-            fetched = await verifyChannel.messages.fetch({ limit: 100 });
-            await verifyChannel.bulkDelete(fetched);
-        } while (fetched.size > 1);
-        
-        const messages = await verifyChannel.messages.fetch();
-
-        if (messages.size === 0) {
-            verifyChannel.send({
-                embeds:
-                    [verifyEmbed],
-
-                components: [
-                    new ActionRowBuilder().addComponents(
-                        new ButtonBuilder()
-                        .setCustomId("open-menu")
-                        .setLabel("Verify")
-                        .setStyle(ButtonStyle.Success),
-                    ),
-                ],
-            });
-        }
-
-        client.on(Events.InteractionCreate, async (interaction) => {
-            if (interaction.isButton()) {
-                if (interaction.customId === "open-menu") {
-
-                    const verifiedRoleId = verificationConfig['verifiedRole'];
-                    if (interaction.member.roles.cache.has(verifiedRoleId)) {
-                        if (!interaction.replied && !interaction.deferred) {
-                            await interaction.reply({
-                                content: "✅ Already verified",
-                                flags: MessageFlags.Ephemeral,
-                            });
-                        }
-                        return;
-                    }
-                    
-                    await verify.startVerification(interaction);
-                }
-                if (interaction.customId === "continue-button") {
-                    await verify.showModal(interaction);
-                }
-            }
-
-            if (interaction.isStringSelectMenu()) {
-                if (interaction.customId === "course-select") {
-                    await verify.handleCourseSelect(interaction);
-                }
-
-                if (interaction.customId === "role-select") {
-                    await verify.handleRoleSelect(interaction);
-                }
-            }
-
-            if (interaction.isModalSubmit()) {
-                if (interaction.customId === "verify-modal") {
-                    await verify.handleModalSubmit(interaction, client);
-                }
-            }
-        });
+        verify.mainVerification(client);
 	},
 }
