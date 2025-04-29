@@ -1,6 +1,8 @@
 // Import Dependencies
 const { Events, ActivityType } = require('discord.js');
 const verify = require('../lib/verify');
+const welcomeEmbed = require('../data/embeds/welcomeEmbed');
+const GUILD_ID = process.env.GUILD_ID;
 const { selectChannelByCode } = require('../queries/channelQueries');
 
 module.exports = {
@@ -18,6 +20,18 @@ module.exports = {
 		client.user.setActivity("SEED SIG", {
 			type: ActivityType.Competing
 		});
+
+        client.on('guildMemberAdd', async member => {
+            if (member.guild.id !== GUILD_ID) {
+                return;
+            }
+        
+            console.log('New member joined');
+            member.send({
+                content: "Welcome to SEED SIG's OFFICIAL DISCORD! 🌱",
+                embeds: [welcomeEmbed.welcomeEmbed1, welcomeEmbed.welcomeEmbed2]
+            })
+        });
 
         verify.mainVerification(client);
 	},
