@@ -1,6 +1,7 @@
-const { Events } = require('discord.js');
+const { Events, MessageFlags } = require('discord.js');
 const verify = require('../lib/verify');
 const idMapping = require('../data/idMapping');
+const { selectRoleByCode } = require('../queries/roleQueries');
 
 module.exports = {
     // Create an event listener for when a command is executed
@@ -10,8 +11,8 @@ module.exports = {
         // Check if the button pressed is the verification button.
         if (interaction.isButton()) {
             if (interaction.customId === idMapping.openVerificationMenuBtnID) {
-                // TODO: Get role ID from DB
-                const verifiedRoleId = verificationConfig['verifiedRole'];
+                
+                const verifiedRoleId = (await selectRoleByCode({ code: 'verified_RID' })).role_id;
 
                 // Prevent user from verifying again
                 if (interaction.member.roles.cache.has(verifiedRoleId)) {
@@ -26,24 +27,24 @@ module.exports = {
                 
                 await verify.startVerification(interaction);
             }
-            if (interaction.customId === "continue-button") {
+            if (interaction.customId === idMapping.verificationContinueBtnID) {
                 await verify.showModal(interaction);
             }
         }
 
         if (interaction.isStringSelectMenu()) {
-            if (interaction.customId === "course-select") {
+            if (interaction.customId === idMapping.verificationCourseSelectID) {
                 await verify.handleCourseSelect(interaction);
             }
 
-            if (interaction.customId === "role-select") {
+            if (interaction.customId === idMapping.verificationRoleSelectID) {
                 await verify.handleRoleSelect(interaction);
             }
         }
 
         if (interaction.isModalSubmit()) {
-            if (interaction.customId === "verify-modal") {
-                await verify.handleModalSubmit(interaction, client);
+            if (interaction.customId === idMapping.verficiationModalID) {
+                await verify.handleModalSubmit(interaction);
             }
         }
     },

@@ -19,10 +19,13 @@ module.exports.selectAllRoles = (callback) => {
     pool.query(SQLSTATEMENT, callback);
 }
 
-module.exports.selectAllRoles = (callback) => {
+module.exports.selectRoleByCode = (data, callback) => {
     const SQLSTATEMENT = `
-        SELECT * FROM role;  
+        SELECT * FROM role
+        WHERE code = ?;
     `;
 
-    pool.query(SQLSTATEMENT, callback);
+    const VALUES = [data.code];
+
+    pool.query(SQLSTATEMENT, VALUES, callback);
 }

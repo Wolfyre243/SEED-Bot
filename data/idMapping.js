@@ -3,5 +3,6 @@ module.exports = {
     verificationCourseSelectID: "course-select",
     verificationRoleSelectID: "role-select",
     verificationContinueBtnID: "continue-btn",
-    verficiationModalID: "verify-modal"
+    verficiationModalID: "verify-modal",
+    verificationModalNameID: "verifymodal-name"
 }
